@@ -18,12 +18,20 @@ try:
 
     for discover in adapter.scan(run_as_root=True, timeout=5):
         if discover['name'] == 'TEMP':
-            print('Device found, try to connect with device')
-            device = adapter.connect(discover['address'])
-            print('Connected with device')
-                            
-            while True:
-                device.subscribe('00002a1c-0000-1000-8000-00805f9b34fb', callback=handleData, indication=True)
+            try:
+                print('Device found, try to connect with device')
+                device = adapter.connect(discover['address'])
+                print('Connected with device')
+                                
+                while True:
+                    device.subscribe('00002a1c-0000-1000-8000-00805f9b34fb', callback=handleData, indication=True)
+
+            except KeyboardInterrupt:
+                print('Terminate')
+            except:
+                print('Failed to connect with device')
+            finally:
+                device.disconnect()
                 
 except KeyboardInterrupt:
     print('Terminate')
